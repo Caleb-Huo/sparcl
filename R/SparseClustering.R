@@ -12,7 +12,7 @@ GetWCSS <- function(x, Cs, ws=NULL){
   if(is.null(ws)) return(list(wcss.perfeature=wcss.perfeature, wcss=sum(wcss.perfeature), bcss.perfeature=bcss.perfeature))
 }
  
-UpdateCs <- function(x, K, ws, Cs){
+UpdateCs <- function(x, K, ws, Cs=NULL){
   x <- x[,ws!=0]
   z <- sweep(x, 2, sqrt(ws[ws!=0]), "*")
   nrowz <- nrow(z)
