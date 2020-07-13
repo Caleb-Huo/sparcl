@@ -1,5 +1,5 @@
 `KMeansSparseCluster` <-
-function(x, K=NULL, wbounds=NULL, nstart=20, silent=FALSE, maxiter=6, centers=NULL){
+function(x, K=NULL, wbounds=NULL, ws = NULL, nstart=20, silent=FALSE, maxiter=6, centers=NULL){
   # The criterion is : minimize_{w, C} sum_j w_j (WCSS_j - TSS_j) s.t. ||w||_2=1, ||w||_1<=s, w_j>=0
   # x is the data, nxp
   # K is the number of clusters desired
@@ -18,7 +18,9 @@ function(x, K=NULL, wbounds=NULL, nstart=20, silent=FALSE, maxiter=6, centers=NU
   if(is.null(K)) Cs <- kmeans(x, centers=centers)$cluster
   for(i in 1:length(wbounds)){
     if(length(wbounds)>1 && !silent) cat(i,fill=FALSE)
-    ws <- rep(1/sqrt(ncol(x)), ncol(x)) # Start with equal weights on each feature
+		if(is.null(ws)){
+	    ws <- rep(1/sqrt(ncol(x)), ncol(x)) # Start with equal weights on each feature			
+		}	
     ws.old <- rnorm(ncol(x))
     store.bcss.ws <- NULL
     niter <- 0
