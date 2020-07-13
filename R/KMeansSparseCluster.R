@@ -14,13 +14,17 @@ function(x, K=NULL, wbounds=NULL, ws = NULL, nstart=20, silent=FALSE, maxiter=6,
   if(min(wbounds)<=1) stop("wbounds should be greater than 1")
   wbounds <- c(wbounds) # In case wbounds is a single number, turn it into a vector
   out <- list()
-  if(!is.null(K)) Cs <- kmeans(x, centers=K, nstart=nstart)$cluster
-  if(is.null(K)) Cs <- kmeans(x, centers=centers)$cluster
+	if(is.null(ws)){
+    ws0 <- rep(1/sqrt(ncol(x)), ncol(x)) # Start with equal weights on each feature			
+	}	else {
+		ws0 <- ws
+	}
+  if(!is.null(K)) Cs <- UpdateCs(x, K, ws0)
+  if(is.null(K)) Cs <- UpdateCs(x, K, ws0)
+
   for(i in 1:length(wbounds)){
     if(length(wbounds)>1 && !silent) cat(i,fill=FALSE)
-		if(is.null(ws)){
-	    ws <- rep(1/sqrt(ncol(x)), ncol(x)) # Start with equal weights on each feature			
-		}	
+	  ws <- ws0
     ws.old <- rnorm(ncol(x))
     store.bcss.ws <- NULL
     niter <- 0
