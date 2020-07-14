@@ -19,8 +19,8 @@ function(x, K=NULL, wbounds=NULL, ws = NULL, nstart=20, silent=FALSE, maxiter=6,
 	}	else {
 		ws0 <- ws
 	}
-  if(!is.null(K)) Cs <- UpdateCs(x, K, ws0)
-  if(is.null(K)) Cs <- UpdateCs(x, K, ws0)
+  if(!is.null(K)) Cs <- UpdateCs(x, K, ws0, nstart=nstart)
+  if(is.null(K)) Cs <- UpdateCs(x, K, ws0, nstart=nstart)
 
   for(i in 1:length(wbounds)){
     if(length(wbounds)>1 && !silent) cat(i,fill=FALSE)
@@ -33,9 +33,9 @@ function(x, K=NULL, wbounds=NULL, ws = NULL, nstart=20, silent=FALSE, maxiter=6,
       niter <- niter+1
       ws.old <- ws
       if(!is.null(K)){
-        if(niter>1) Cs <- UpdateCs(x, K, ws, Cs) # if niter=1, no need to update!!
+        if(niter>1) Cs <- UpdateCs(x, K, ws, Cs, nstart=nstart) # if niter=1, no need to update!!
       } else {
-        if(niter>1) Cs <- UpdateCs(x, nrow(centers), ws, Cs) # if niter=1, no need to update!!
+        if(niter>1) Cs <- UpdateCs(x, nrow(centers), ws, Cs, nstart=nstart) # if niter=1, no need to update!!
       }
       ws <- UpdateWs(x, Cs, wbounds[i])
       store.bcss.ws <- c(store.bcss.ws, sum(GetWCSS(x, Cs)$bcss.perfeature*ws))

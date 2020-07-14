@@ -12,7 +12,7 @@ GetWCSS <- function(x, Cs, ws=NULL){
   if(is.null(ws)) return(list(wcss.perfeature=wcss.perfeature, wcss=sum(wcss.perfeature), bcss.perfeature=bcss.perfeature))
 }
  
-UpdateCs <- function(x, K, ws, Cs=NULL){
+UpdateCs <- function(x, K, ws, Cs=NULL, nstart=20){
   x <- x[,ws!=0]
   z <- sweep(x, 2, sqrt(ws[ws!=0]), "*")
   nrowz <- nrow(z)
@@ -24,14 +24,14 @@ UpdateCs <- function(x, K, ws, Cs=NULL){
     }
   }
   if(is.null(mus)){
-    km <- kmeans(z, centers=K, nstart=10)
+    km <- kmeans(z, centers=K, nstart=nstart)
   } else {
     distmat <- as.matrix(dist(rbind(z, mus)))[1:nrowz, (nrowz+1):(nrowz+K)]
     nearest <- apply(distmat, 1, which.min)
     if(length(unique(nearest))==K){
-      km <- kmeans(z, centers=mus)
+      km <- kmeans(z, centers=mus, nstart=nstart)
     } else {
-      km <- kmeans(z, centers=K, nstart=10)
+      km <- kmeans(z, centers=K, nstart=nstart)
     }
   }
   return(km$cluster)
